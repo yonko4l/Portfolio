@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yonko</title>
+<style>
+/* FONT: put OMORI_GAME2.ttf in the assets folder */
+@font-face {
+  font-family: "MyFont";
+  src: url("assets/OMORI_GAME2.ttf") format("truetype");
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #ffffff;
+  color: #000000;
+  font-family: "MyFont", sans-serif;
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+body.locked { overflow: hidden; }
+
+/* ---------- PORTFOLIO (replace with your real content) ---------- */
+#portfolio {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+#portfolio h1 { font-size: 56px; margin: 0 0 8px; }
+#portfolio h2 { font-size: 34px; margin: 56px 0 8px; border-bottom: 3px solid #000; }
+#portfolio a { color: #000; }
+
+/* ---------- INTRO MENU ---------- */
+#omori-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background: #ffffff;
+}
+
+#omori-menu .stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  opacity: 0;
+  /* 2s of pure white, then 5s fade-in */
+  animation: menu-fade-in 5s ease 2s forwards;
+}
+
+@keyframes menu-fade-in { to { opacity: 1; } }
+
+.stage .bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.btn {
+  position: absolute;
+  display: block;
+  cursor: pointer;
+}
+.btn img { display: block; width: 100%; }
+.btn .pressed { position: absolute; top: 0; left: 0; opacity: 0; }
+.btn:hover .pressed, .btn:focus-visible .pressed { opacity: 1; }
+.btn:focus-visible { outline: 2px solid #000; }
+
+.btn-load { left: 10%;   top: 86%; width: 18%; }
+.btn-exit { left: 72.5%; top: 86%; width: 18%; }
+
+/* clicking Load: black for 2.5s, then fade out over 2s */
+#omori-menu.entering {
+  background: #000000;
+  animation: enter-profile 4.5s linear forwards;
+}
+#omori-menu.entering .stage { display: none; }
+
+@keyframes enter-profile {
+  0%, 55.56% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #omori-menu .stage { animation-duration: 0.01s; animation-delay: 0s; }
+}
+</style>
+</head>
+<body class="locked">
+
+<!-- PORTFOLIO -->
+<main id="portfolio">
+  <h1>yonko</h1>
+  <p>Design student. Writer. Makes games, edits and strange little websites.</p>
+
+  <h2>Work</h2>
+  <p>Project one. Project two. Project three.</p>
+
+  <h2>About</h2>
+  <p>A few lines about you go here.</p>
+
+  <h2>Contact</h2>
+  <p><a href="mailto:you@example.com">you@example.com</a></p>
+</main>
+
+<!-- INTRO MENU -->
+<div id="omori-menu">
+  <div class="stage">
+    <img class="bg" src="assets/bg.jpg" alt="">
+
+    <a class="btn btn-load" id="load" href="#portfolio" aria-label="Load">
+      <img class="idle" src="assets/load.jpg" alt="Load">
+      <img class="pressed" src="assets/loadhold.jpg" alt="">
+    </a>
+
+    <a class="btn btn-exit" id="exit" href="https://spacehey.com" aria-label="Exit">
+      <img class="idle" src="assets/exit.jpg" alt="Exit">
+      <img class="pressed" src="assets/exithold.jpg" alt="">
+    </a>
+  </div>
+</div>
+
+<!-- optional sounds: add assets/duet.mp3 and assets/click.mp3 -->
+<audio id="music" src="assets/duet.mp3" loop preload="auto"></audio>
+<audio id="click" src="assets/click.mp3" preload="auto"></audio>
+
+<script>
+  var menu = document.getElementById("omori-menu");
+  var music = document.getElementById("music");
+  var click = document.getElementById("click");
+
+  document.getElementById("load").addEventListener("click", function (e) {
+    e.preventDefault();
+    click.play().catch(function () {});
+    music.play().catch(function () {});
+    menu.classList.add("entering");
+
+    // after the 4.5s black-then-fade, remove the menu and unlock scrolling
+    setTimeout(function () {
+      menu.style.display = "none";
+      document.body.classList.remove("locked");
+    }, 4500);
+  });
+
+  // Exit: play the click, then leave after a short moment so the sound isn't cut off
+  var exitLink = document.getElementById("exit");
+  exitLink.addEventListener("click", function (e) {
+    e.preventDefault();
+    click.currentTime = 0;
+    click.play().catch(function () {});
+    setTimeout(function () {
+      window.location.href = exitLink.href;
+    }, 350);
+  });
+</script>
+</body>
+</html>
